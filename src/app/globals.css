@@ -1,26 +1,277 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* ===== Custom Theme: Kyberbezpecak.cz ===== */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Terminal Green palette */
+  --color-terminal-50: #f0fdf4;
+  --color-terminal-100: #dcfce7;
+  --color-terminal-200: #bbf7d0;
+  --color-terminal-300: #86efac;
+  --color-terminal-400: #4ade80;
+  --color-terminal-500: #22c55e;
+  --color-terminal-600: #16a34a;
+  --color-terminal-700: #15803d;
+  --color-terminal-800: #166534;
+  --color-terminal-900: #14532d;
+  --color-terminal-950: #052e16;
+
+  /* Dark backgrounds */
+  --color-dark-50: #f8fafc;
+  --color-dark-100: #f1f5f9;
+  --color-dark-200: #e2e8f0;
+  --color-dark-300: #cbd5e1;
+  --color-dark-400: #94a3b8;
+  --color-dark-500: #64748b;
+  --color-dark-600: #475569;
+  --color-dark-700: #334155;
+  --color-dark-800: #1e293b;
+  --color-dark-850: #172033;
+  --color-dark-900: #0f172a;
+  --color-dark-950: #020617;
+
+  /* Accent colors */
+  --color-cyber-blue: #06b6d4;
+  --color-cyber-purple: #a855f7;
+  --color-cyber-red: #ef4444;
+  --color-cyber-amber: #f59e0b;
+
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ===== Light Mode ===== */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-code: #1e293b;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border-color: #e2e8f0;
+  --accent: #16a34a;
+  --accent-hover: #15803d;
+  --accent-glow: rgba(34, 197, 94, 0.15);
 }
 
+/* ===== Dark Mode ===== */
+.dark {
+  --bg-primary: #0a0f1a;
+  --bg-secondary: #0f172a;
+  --bg-tertiary: #172033;
+  --bg-card: #1e293b;
+  --bg-code: #0f172a;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: #1e293b;
+  --accent: #22c55e;
+  --accent-hover: #4ade80;
+  --accent-glow: rgba(34, 197, 94, 0.2);
+}
+
+/* ===== Base Styles ===== */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* ===== Selection ===== */
+::selection {
+  background-color: rgba(34, 197, 94, 0.3);
+  color: inherit;
+}
+
+/* ===== Terminal glow effect ===== */
+.glow-green {
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.5), 0 0 20px rgba(34, 197, 94, 0.3);
+}
+
+.glow-border {
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.15), 0 0 20px rgba(34, 197, 94, 0.05);
+}
+
+/* ===== Blinking cursor animation ===== */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* ===== Prose / MDX Article Styles ===== */
+.prose-cyber {
+  --tw-prose-body: var(--text-primary);
+  --tw-prose-headings: var(--text-primary);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--text-primary);
+  --tw-prose-code: var(--accent);
+  --tw-prose-quotes: var(--text-secondary);
+  --tw-prose-quote-borders: var(--accent);
+}
+
+.prose-cyber h1,
+.prose-cyber h2,
+.prose-cyber h3,
+.prose-cyber h4 {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.prose-cyber h2 {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+
+.prose-cyber a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+
+.prose-cyber a:hover {
+  color: var(--accent-hover);
+}
+
+.prose-cyber blockquote {
+  border-left: 3px solid var(--accent);
+  background-color: var(--bg-tertiary);
+  padding: 1rem 1.5rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--text-secondary);
+  font-style: normal;
+}
+
+.prose-cyber code:not(pre code) {
+  background-color: var(--bg-tertiary);
+  color: var(--accent);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 500;
+}
+
+.prose-cyber pre {
+  background-color: var(--bg-code) !important;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+.prose-cyber img {
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.prose-cyber ul {
+  list-style-type: disc;
+}
+
+.prose-cyber ol {
+  list-style-type: decimal;
+}
+
+.prose-cyber li::marker {
+  color: var(--accent);
+}
+
+.prose-cyber hr {
+  border-color: var(--border-color);
+}
+
+.prose-cyber table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prose-cyber th {
+  background-color: var(--bg-tertiary);
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--accent);
+  font-weight: 600;
+}
+
+.prose-cyber td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* ===== Rehype Pretty Code overrides ===== */
+[data-rehype-pretty-code-figure] pre {
+  padding: 1rem 0;
+}
+
+[data-rehype-pretty-code-figure] code {
+  counter-reset: line;
+  font-size: 0.875rem;
+}
+
+[data-rehype-pretty-code-figure] [data-line] {
+  padding: 0 1.25rem;
+  border-left: 2px solid transparent;
+}
+
+[data-rehype-pretty-code-figure] [data-highlighted-line] {
+  background-color: rgba(34, 197, 94, 0.1);
+  border-left-color: var(--accent);
+}
+
+[data-rehype-pretty-code-figure] [data-line-numbers] [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1rem;
+  margin-right: 1.25rem;
+  text-align: right;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* ===== Code block title ===== */
+[data-rehype-pretty-code-title] {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-family: var(--font-mono, monospace);
+  color: var(--text-secondary);
+}
+
+[data-rehype-pretty-code-title] + pre {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
