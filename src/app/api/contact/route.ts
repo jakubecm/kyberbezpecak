@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { rateLimit } from "@/lib/rate-limit";
+
+const resend = new Resend(process.env.SMTP_PASS);
 
 const MAX_NAME_LENGTH = 100;
 const MAX_EMAIL_LENGTH = 254;
@@ -96,24 +98,20 @@ export async function POST(request: Request) {
       );
     }
 
-    // Honeypot check – if a hidden field `website` is filled, it's a bot
+    // Honeypot check
     if (body.website) {
-      // Silently accept to not reveal the honeypot
       return NextResponse.json({
         success: true,
         message: "Zpráva byla úspěšně odeslána!",
       });
     }
 
-    // Check if SMTP is configured
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = process.env.SMTP_PORT;
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
+    // Zkontrolujeme už jen to, jestli máme API klíč a cílový e-mail
+    const smtpPass = process.env.SMTP_PASS; // tvůj Resend API klíč
     const contactEmail = process.env.CONTACT_EMAIL;
 
-    if (!smtpHost || !smtpUser || !smtpPass || !contactEmail) {
-      console.log("Contact form submission (SMTP not configured):", {
+    if (!smtpPass || !contactEmail) {
+      console.log("Contact form submission (Resend API key not configured):", {
         name,
         email: email.substring(0, 3) + "***",
         subject,
@@ -121,24 +119,14 @@ export async function POST(request: Request) {
 
       return NextResponse.json({
         success: true,
-        message: "Zpráva byla přijata. (SMTP není nakonfigurováno – zpráva zalogována.)",
+        message: "Zpráva byla přijata. (E-mail nebyl odeslán – chybí konfigurace.)",
       });
     }
 
-    // Send email
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: parseInt(smtpPort ?? "587", 10),
-      secure: smtpPort === "465",
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
-
-    await transporter.sendMail({
-      from: `"Kyberbezpečák - Kontakt" <info@kyberbezpecak.cz>`,
-      to: contactEmail,
+    // Resend API call to send the email
+    const { error } = await resend.emails.send({
+      from: 'Kyberbezpečák - Kontakt <info@kyberbezpecak.cz>',
+      to: [contactEmail],
       replyTo: email,
       subject: `[Kontakt] ${escapeHtml(subject)}`,
       text: `Jméno: ${name}\nE-mail: ${email}\n\n${message}`,
@@ -149,8 +137,17 @@ export async function POST(request: Request) {
         <p><strong>Předmět:</strong> ${escapeHtml(subject)}</p>
         <hr />
         <p>${escapeHtml(message).replace(/\n/g, "<br />")}</p>
-      `,
+      `
     });
+
+    // API error check
+    if (error) {
+      console.error("Resend API chyba:", error);
+      return NextResponse.json(
+        { success: false, message: "Nepodařilo se odeslat zprávu přes server." },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       { success: true, message: "Zpráva byla úspěšně odeslána!" },
