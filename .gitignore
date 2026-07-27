@@ -39,5 +39,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-content/posts/example.mdx
+content/posts/cs/example.mdx
