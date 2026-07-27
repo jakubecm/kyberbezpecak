@@ -137,7 +137,7 @@ export async function POST(request: Request) {
     });
 
     await transporter.sendMail({
-      from: `"Kyberbezpečák - Kontakt" <${smtpUser}>`,
+      from: `"Kyberbezpečák - Kontakt" <info@kyberbezpecak.cz>`,
       to: contactEmail,
       replyTo: email,
       subject: `[Kontakt] ${escapeHtml(subject)}`,
