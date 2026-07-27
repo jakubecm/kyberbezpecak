@@ -1,8 +1,9 @@
-FROM node:20-alpine AS base
+FROM node:24-bookworm-slim AS base
+# Stažení nejnovějších bezpečnostních updatů pro Debian
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 
 # --- Dependencies ---
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
