@@ -3,8 +3,6 @@ import { headers } from "next/headers";
 import { Resend } from "resend";
 import { rateLimit } from "@/lib/rate-limit";
 
-const resend = new Resend(process.env.SMTP_PASS);
-
 const MAX_NAME_LENGTH = 100;
 const MAX_EMAIL_LENGTH = 254;
 const MAX_SUBJECT_LENGTH = 200;
@@ -106,8 +104,8 @@ export async function POST(request: Request) {
       });
     }
 
-    // Zkontrolujeme už jen to, jestli máme API klíč a cílový e-mail
-    const smtpPass = process.env.SMTP_PASS; // tvůj Resend API klíč
+    // API key and email check
+    const smtpPass = process.env.SMTP_PASS;
     const contactEmail = process.env.CONTACT_EMAIL;
 
     if (!smtpPass || !contactEmail) {
@@ -122,6 +120,8 @@ export async function POST(request: Request) {
         message: "Zpráva byla přijata. (E-mail nebyl odeslán – chybí konfigurace.)",
       });
     }
+
+    const resend = new Resend(smtpPass);
 
     // Resend API call to send the email
     const { error } = await resend.emails.send({
