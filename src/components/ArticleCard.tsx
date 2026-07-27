@@ -1,12 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import { type Post } from "@/types";
 import { formatDate, getCategoryColor, getCategoryColorLight } from "@/lib/utils";
 import { HiOutlineClock, HiOutlineCalendar } from "react-icons/hi2";
+import { useDictionary } from "@/i18n/DictionaryProvider";
+import { localePath } from "@/i18n/config";
 
 export function ArticleCard({ post }: { post: Post }) {
+  const { lang } = useDictionary();
+
   return (
     <article className="group relative rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] overflow-hidden hover:border-[var(--accent)]/40 transition-all duration-300 hover:shadow-lg hover:shadow-[var(--accent-glow)]">
-      <Link href={`/blog/${post.slug}`} className="block p-6">
+      <Link href={localePath(lang, `/blog/${post.slug}`)} className="block p-6">
         {/* Category badge */}
         <div className="mb-3">
           <span
@@ -30,7 +36,7 @@ export function ArticleCard({ post }: { post: Post }) {
         <div className="flex items-center gap-4 text-xs text-[var(--text-muted)]">
           <span className="flex items-center gap-1.5">
             <HiOutlineCalendar className="w-3.5 h-3.5" />
-            {formatDate(post.date)}
+            {formatDate(post.date, lang)}
           </span>
           <span className="flex items-center gap-1.5">
             <HiOutlineClock className="w-3.5 h-3.5" />

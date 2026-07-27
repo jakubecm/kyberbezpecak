@@ -16,14 +16,14 @@ export default function NotFound() {
         404
       </h1>
       <p className="text-lg text-[var(--text-secondary)] mb-8">
-        Tato stránka nebyla nalezena.
+        Page not found / Stránka nenalezena
       </p>
 
       <Link
         href="/"
         className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white dark:text-black font-semibold text-sm transition-colors"
       >
-        Zpět na hlavní stránku
+        ← Home
       </Link>
     </div>
   );

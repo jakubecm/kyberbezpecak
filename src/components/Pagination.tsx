@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
+import { useDictionary } from "@/i18n/DictionaryProvider";
+import { localePath } from "@/i18n/config";
 
 interface PaginationProps {
   totalPages: number;
@@ -12,13 +14,14 @@ interface PaginationProps {
 
 export function Pagination({ totalPages, currentPage }: PaginationProps) {
   const searchParams = useSearchParams();
+  const { dict, lang } = useDictionary();
 
   if (totalPages <= 1) return null;
 
   const buildHref = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", page.toString());
-    return `/blog?${params.toString()}`;
+    return `${localePath(lang, "/blog")}?${params.toString()}`;
   };
 
   const pages: (number | "...")[] = [];
@@ -40,7 +43,7 @@ export function Pagination({ totalPages, currentPage }: PaginationProps) {
   }
 
   return (
-    <nav aria-label="Stránkování" className="flex items-center justify-center gap-1.5 mt-10">
+    <nav aria-label={dict.pagination.label} className="flex items-center justify-center gap-1.5 mt-10">
       <Link
         href={buildHref(Math.max(1, currentPage - 1))}
         className={cn(
@@ -49,7 +52,7 @@ export function Pagination({ totalPages, currentPage }: PaginationProps) {
             ? "pointer-events-none opacity-40"
             : "hover:border-[var(--accent)] hover:text-[var(--accent)]"
         )}
-        aria-label="Předchozí stránka"
+        aria-label={dict.pagination.previous}
       >
         <HiChevronLeft className="w-4 h-4" />
       </Link>
@@ -83,7 +86,7 @@ export function Pagination({ totalPages, currentPage }: PaginationProps) {
             ? "pointer-events-none opacity-40"
             : "hover:border-[var(--accent)] hover:text-[var(--accent)]"
         )}
-        aria-label="Další stránka"
+        aria-label={dict.pagination.next}
       >
         <HiChevronRight className="w-4 h-4" />
       </Link>

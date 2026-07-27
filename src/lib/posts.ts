@@ -3,12 +3,18 @@ import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
 import { type Post, type PostFrontmatter, type Category } from "@/types";
+import { type Locale, defaultLocale } from "@/i18n/config";
 
-const postsDirectory = path.join(process.cwd(), "content", "posts");
+const contentBase = path.join(process.cwd(), "content", "posts");
 
-function ensurePostsDirectory() {
-  if (!fs.existsSync(postsDirectory)) {
-    fs.mkdirSync(postsDirectory, { recursive: true });
+function getPostsDirectory(locale: Locale = defaultLocale): string {
+  return path.join(contentBase, locale);
+}
+
+function ensurePostsDirectory(locale: Locale = defaultLocale) {
+  const dir = getPostsDirectory(locale);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
 }
 
@@ -21,8 +27,9 @@ function sanitizeSlug(slug: string): string | null {
   return slug;
 }
 
-export function getAllPosts(): Post[] {
-  ensurePostsDirectory();
+export function getAllPosts(locale: Locale = defaultLocale): Post[] {
+  ensurePostsDirectory(locale);
+  const postsDirectory = getPostsDirectory(locale);
 
   const fileNames = fs.readdirSync(postsDirectory);
   const posts = fileNames
@@ -41,7 +48,7 @@ export function getAllPosts(): Post[] {
       return {
         slug,
         content,
-        readingTime: stats.text.replace("read", "čtení"),
+        readingTime: locale === "en" ? stats.text : stats.text.replace("read", "čtení"),
         ...frontmatter,
       } as Post;
     })
@@ -52,11 +59,12 @@ export function getAllPosts(): Post[] {
   );
 }
 
-export function getPostBySlug(slug: string): Post | null {
+export function getPostBySlug(slug: string, locale: Locale = defaultLocale): Post | null {
   const safeSlug = sanitizeSlug(slug);
   if (!safeSlug) return null;
 
-  ensurePostsDirectory();
+  ensurePostsDirectory(locale);
+  const postsDirectory = getPostsDirectory(locale);
 
   const fullPath = path.join(postsDirectory, `${safeSlug}.mdx`);
 
@@ -64,7 +72,13 @@ export function getPostBySlug(slug: string): Post | null {
   const resolved = path.resolve(fullPath);
   if (!resolved.startsWith(path.resolve(postsDirectory))) return null;
 
-  if (!fs.existsSync(fullPath)) return null;
+  if (!fs.existsSync(fullPath)) {
+    // Fallback: if article doesn't exist in this locale, try default
+    if (locale !== defaultLocale) {
+      return getPostBySlug(slug, defaultLocale);
+    }
+    return null;
+  }
 
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
@@ -74,17 +88,17 @@ export function getPostBySlug(slug: string): Post | null {
   return {
     slug: safeSlug,
     content,
-    readingTime: stats.text.replace("read", "čtení"),
+    readingTime: locale === "en" ? stats.text : stats.text.replace("read", "čtení"),
     ...frontmatter,
   } as Post;
 }
 
-export function getPostsByCategory(category: Category): Post[] {
-  return getAllPosts().filter((post) => post.category === category);
+export function getPostsByCategory(category: Category, locale: Locale = defaultLocale): Post[] {
+  return getAllPosts(locale).filter((post) => post.category === category);
 }
 
-export function getAllCategories(): { name: Category; count: number }[] {
-  const posts = getAllPosts();
+export function getAllCategories(locale: Locale = defaultLocale): { name: Category; count: number }[] {
+  const posts = getAllPosts(locale);
   const categoryMap = new Map<Category, number>();
 
   posts.forEach((post) => {
@@ -97,8 +111,9 @@ export function getAllCategories(): { name: Category; count: number }[] {
     .sort((a, b) => b.count - a.count);
 }
 
-export function getAllSlugs(): string[] {
-  ensurePostsDirectory();
+export function getAllSlugs(locale: Locale = defaultLocale): string[] {
+  ensurePostsDirectory(locale);
+  const postsDirectory = getPostsDirectory(locale);
 
   return fs
     .readdirSync(postsDirectory)
@@ -106,6 +121,6 @@ export function getAllSlugs(): string[] {
     .map((name) => name.replace(/\.mdx$/, ""));
 }
 
-export function getLatestPosts(count: number = 3): Post[] {
-  return getAllPosts().slice(0, count);
+export function getLatestPosts(count: number = 3, locale: Locale = defaultLocale): Post[] {
+  return getAllPosts(locale).slice(0, count);
 }

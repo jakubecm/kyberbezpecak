@@ -11,21 +11,23 @@ import {
   HiOutlineUser,
   HiOutlineArrowLeft,
 } from "react-icons/hi2";
+import { type Locale, localePath } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const slugs = getAllSlugs();
+  const slugs = getAllSlugs("cs");
   return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const { slug, lang } = await params;
+  const post = getPostBySlug(slug, lang as Locale);
 
-  if (!post) return { title: "Článek nenalezen" };
+  if (!post) return { title: "Not found" };
 
   return {
     title: post.title,
@@ -55,8 +57,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const { lang: langParam, slug } = await params;
+  const lang = langParam as Locale;
+  const dict = await getDictionary(lang);
+  const post = getPostBySlug(slug, lang);
 
   if (!post) notFound();
 
@@ -64,18 +68,18 @@ export default async function BlogPostPage({ params }: PageProps) {
     <article className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-12">
       {/* Back link */}
       <Link
-        href="/blog"
+        href={localePath(lang, "/blog")}
         className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors mb-8"
       >
         <HiOutlineArrowLeft className="w-4 h-4" />
-        Zpět na blog
+        {dict.blog.backToBlog}
       </Link>
 
       {/* Header */}
       <header className="mb-10">
         <div className="mb-4">
           <Link
-            href={`/blog?category=${encodeURIComponent(post.category)}`}
+            href={`${localePath(lang, "/blog")}?category=${encodeURIComponent(post.category)}`}
             className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full border dark:${getCategoryColor(post.category)} ${getCategoryColorLight(post.category)} hover:opacity-80 transition-opacity`}
           >
             {post.category}
@@ -98,7 +102,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           </span>
           <span className="flex items-center gap-1.5">
             <HiOutlineCalendar className="w-4 h-4" />
-            {formatDate(post.date)}
+            {formatDate(post.date, lang)}
           </span>
           <span className="flex items-center gap-1.5">
             <HiOutlineClock className="w-4 h-4" />

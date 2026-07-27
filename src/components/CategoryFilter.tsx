@@ -3,10 +3,13 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { CATEGORIES, type Category } from "@/types";
 import { getCategoryColor, getCategoryColorLight, cn } from "@/lib/utils";
+import { useDictionary } from "@/i18n/DictionaryProvider";
+import { localePath } from "@/i18n/config";
 
 export function CategoryFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { dict, lang } = useDictionary();
   const activeCategory = searchParams.get("category") as Category | null;
 
   const handleFilter = (category: Category | null) => {
@@ -17,7 +20,7 @@ export function CategoryFilter() {
       params.delete("category");
     }
     params.delete("page");
-    router.push(`/blog?${params.toString()}`);
+    router.push(`${localePath(lang, "/blog")}?${params.toString()}`);
   };
 
   return (
@@ -31,7 +34,7 @@ export function CategoryFilter() {
             : "border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
         )}
       >
-        Všechny
+        {dict.blog.all}
       </button>
       {CATEGORIES.map((cat) => (
         <button

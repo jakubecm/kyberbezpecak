@@ -2,8 +2,10 @@
 
 import { useState, type FormEvent } from "react";
 import { type ContactFormData, type ApiResponse } from "@/types";
+import { useDictionary } from "@/i18n/DictionaryProvider";
 
 export function ContactForm() {
+  const { dict } = useDictionary();
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -37,7 +39,7 @@ export function ContactForm() {
       }
     } catch {
       setStatus("error");
-      setErrorMsg("Něco se pokazilo. Zkus to prosím znovu.");
+      setErrorMsg(dict.contact.error);
     }
   };
 
@@ -63,7 +65,7 @@ export function ContactForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-            Jméno *
+            {dict.contact.name}
           </label>
           <input
             type="text"
@@ -71,13 +73,13 @@ export function ContactForm() {
             required
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Jan Novák"
+            placeholder={dict.contact.namePlaceholder}
             className={inputClasses}
           />
         </div>
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-            E-mail *
+            {dict.contact.email}
           </label>
           <input
             type="email"
@@ -85,7 +87,7 @@ export function ContactForm() {
             required
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            placeholder="jan@email.cz"
+            placeholder={dict.contact.emailPlaceholder}
             className={inputClasses}
           />
         </div>
@@ -93,7 +95,7 @@ export function ContactForm() {
 
       <div>
         <label htmlFor="subject" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-          Předmět *
+          {dict.contact.subject}
         </label>
         <input
           type="text"
@@ -101,14 +103,14 @@ export function ContactForm() {
           required
           value={formData.subject}
           onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-          placeholder="Dotaz k článku o..."
+          placeholder={dict.contact.subjectPlaceholder}
           className={inputClasses}
         />
       </div>
 
       <div>
         <label htmlFor="message" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-          Zpráva *
+          {dict.contact.message}
         </label>
         <textarea
           id="message"
@@ -116,7 +118,7 @@ export function ContactForm() {
           rows={6}
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          placeholder="Tvoje zpráva..."
+          placeholder={dict.contact.messagePlaceholder}
           className={`${inputClasses} resize-y`}
         />
       </div>
@@ -126,12 +128,12 @@ export function ContactForm() {
         disabled={status === "loading"}
         className="w-full sm:w-auto px-8 py-3 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black font-semibold text-sm transition-colors cursor-pointer"
       >
-        {status === "loading" ? "Odesílám..." : "Odeslat zprávu"}
+        {status === "loading" ? dict.contact.sending : dict.contact.send}
       </button>
 
       {status === "success" && (
         <p className="text-sm text-[var(--accent)] font-medium">
-          ✓ Zpráva byla úspěšně odeslána. Díky!
+          {dict.contact.success}
         </p>
       )}
       {status === "error" && (

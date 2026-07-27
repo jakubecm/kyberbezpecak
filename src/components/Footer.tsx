@@ -1,9 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { HiOutlineTerminal } from "react-icons/hi";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
+import { useDictionary } from "@/i18n/DictionaryProvider";
+import { localePath } from "@/i18n/config";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { dict, lang } = useDictionary();
 
   return (
     <footer className="border-t border-[var(--border-color)] bg-[var(--bg-secondary)]">
@@ -18,21 +23,20 @@ export function Footer() {
               </span>
             </div>
             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-              Osobní blog o kybernetické bezpečnosti. Sdílím zkušenosti, novinky
-              a praktické návody z oblasti AppSec a dalších.
+              {dict.footer.description}
             </p>
           </div>
 
           {/* Links */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-3">
-              Navigace
+              {dict.footer.navigation}
             </h3>
             <ul className="space-y-2">
               {[
-                { href: "/", label: "Domů" },
-                { href: "/blog", label: "Blog" },
-                { href: "/o-mne", label: "O mně" },
+                { href: localePath(lang, "/"), label: dict.navbar.home },
+                { href: localePath(lang, "/blog"), label: dict.navbar.blog },
+                { href: localePath(lang, "/about"), label: dict.navbar.about },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -49,7 +53,7 @@ export function Footer() {
           {/* Social */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-3">
-              Sociální sítě
+              {dict.footer.socialNetworks}
             </h3>
             <div className="flex gap-3">
               {[
@@ -82,7 +86,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-10 pt-6 border-t border-[var(--border-color)] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-[var(--text-muted)] font-mono">
-            &copy; {currentYear} Milan Jakubec. Všechna práva vyhrazena.
+            &copy; {currentYear} Milan Jakubec. {dict.footer.allRightsReserved}
           </p>
         </div>
       </div>

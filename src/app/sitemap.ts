@@ -5,14 +5,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://kyberbezpecak.cz";
 
   const posts = getAllPosts();
-  const postEntries: MetadataRoute.Sitemap = posts.map((post) => ({
+
+  // CS posts (default locale, no prefix)
+  const csPostEntries: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.updated ?? post.date),
     changeFrequency: "monthly",
     priority: 0.7,
   }));
 
+  // EN posts (with /en/ prefix)
+  const enPostEntries: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${baseUrl}/en/blog/${post.slug}`,
+    lastModified: new Date(post.updated ?? post.date),
+    changeFrequency: "monthly",
+    priority: 0.5,
+  }));
+
   return [
+    // CS (default)
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -26,11 +37,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/o-mne`,
+      url: `${baseUrl}/about`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
-    ...postEntries,
+    ...csPostEntries,
+
+    // EN
+    {
+      url: `${baseUrl}/en`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/en/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/en/about`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.4,
+    },
+    ...enPostEntries,
   ];
 }

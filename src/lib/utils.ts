@@ -1,11 +1,15 @@
 import { type Category } from "@/types";
+import { type Locale } from "@/i18n/config";
 
-export function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("cs-CZ", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+export function formatDate(dateString: string, locale: Locale = "cs"): string {
+  return new Date(dateString).toLocaleDateString(
+    locale === "en" ? "en-US" : "cs-CZ",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
 }
 
 export function getCategoryColor(category: Category): string {

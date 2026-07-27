@@ -5,17 +5,21 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { HiOutlineBars3, HiXMark } from "react-icons/hi2";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageToggle } from "./LanguageToggle";
+import { useDictionary } from "@/i18n/DictionaryProvider";
+import { localePath } from "@/i18n/config";
 import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { href: "/", label: "Domů" },
-  { href: "/blog", label: "Blog" },
-  { href: "/o-mne", label: "O mně" },
-];
 
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { dict, lang } = useDictionary();
+
+  const navLinks = [
+    { href: localePath(lang, "/"), label: dict.navbar.home },
+    { href: localePath(lang, "/blog"), label: dict.navbar.blog },
+    { href: localePath(lang, "/about"), label: dict.navbar.about },
+  ];
 
   return (
     <nav className="sticky top-0 z-50 border-b border-[var(--border-color)] bg-[var(--bg-primary)]/80 backdrop-blur-xl">
@@ -45,13 +49,15 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <div className="ml-3">
+            <div className="ml-3 flex items-center gap-2">
+              <LanguageToggle />
               <ThemeToggle />
             </div>
           </div>
 
           {/* Mobile buttons */}
           <div className="flex items-center gap-2 md:hidden">
+            <LanguageToggle />
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}

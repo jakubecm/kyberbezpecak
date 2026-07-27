@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -64,22 +63,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const locale = headersList.get("x-locale") ?? "cs";
+
   return (
     <html
-      lang="cs"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          {children}
         </ThemeProvider>
       </body>
     </html>

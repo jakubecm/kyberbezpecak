@@ -9,10 +9,12 @@ import { Pagination } from "@/components/Pagination";
 import { type Category } from "@/types";
 import { HiOutlineDocumentMagnifyingGlass } from "react-icons/hi2";
 import { usePosts } from "./usePosts";
+import { useDictionary } from "@/i18n/DictionaryProvider";
 
 export function BlogContent() {
   const searchParams = useSearchParams();
   const allPosts = usePosts();
+  const { dict } = useDictionary();
 
   const category = searchParams.get("category") as Category | null;
   const query = searchParams.get("q") ?? "";
@@ -57,10 +59,10 @@ export function BlogContent() {
       {/* Results info */}
       <p className="text-sm text-[var(--text-muted)] font-mono">
         {filteredPosts.length === 0
-          ? "Žádné výsledky"
-          : `Nalezeno ${filteredPosts.length} článků`}
-        {category && ` v kategorii „${category}"`}
-        {query && ` pro „${query}"`}
+          ? dict.blog.noResults
+          : `${dict.blog.found} ${filteredPosts.length} ${dict.blog.articles}`}
+        {category && ` ${dict.blog.inCategory} „${category}"`}
+        {query && ` ${dict.blog.forQuery} „${query}"`}
       </p>
 
       {/* Articles grid */}
@@ -74,10 +76,10 @@ export function BlogContent() {
         <div className="text-center py-20">
           <HiOutlineDocumentMagnifyingGlass className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-4" />
           <p className="text-[var(--text-secondary)] text-lg font-medium mb-2">
-            Nic nenalezeno
+            {dict.blog.nothingFound}
           </p>
           <p className="text-sm text-[var(--text-muted)]">
-            Zkus změnit filtr nebo hledaný výraz.
+            {dict.blog.tryDifferent}
           </p>
         </div>
       )}

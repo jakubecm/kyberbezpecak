@@ -3,10 +3,12 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { HiSun, HiMoon } from "react-icons/hi2";
+import { useDictionary } from "@/i18n/DictionaryProvider";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { dict } = useDictionary();
 
   useEffect(() => setMounted(true), []);
 
@@ -14,7 +16,7 @@ export function ThemeToggle() {
     return (
       <button
         className="p-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)]"
-        aria-label="Přepnout téma"
+        aria-label={dict.navbar.toggleTheme}
       >
         <div className="w-5 h-5" />
       </button>
@@ -25,7 +27,7 @@ export function ThemeToggle() {
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className="p-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] hover:border-[var(--accent)] transition-colors cursor-pointer"
-      aria-label={theme === "dark" ? "Přepnout na světlý režim" : "Přepnout na tmavý režim"}
+      aria-label={theme === "dark" ? dict.navbar.toggleThemeDark : dict.navbar.toggleThemeLight}
     >
       {theme === "dark" ? (
         <HiSun className="w-5 h-5 text-yellow-400" />

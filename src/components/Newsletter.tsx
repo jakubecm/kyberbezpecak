@@ -2,8 +2,10 @@
 
 import { useState, type FormEvent } from "react";
 import { HiOutlineEnvelope } from "react-icons/hi2";
+import { useDictionary } from "@/i18n/DictionaryProvider";
 
 export function Newsletter() {
+  const { dict } = useDictionary();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
@@ -27,10 +29,10 @@ export function Newsletter() {
           <HiOutlineEnvelope className="w-6 h-6 text-[var(--accent)]" />
         </div>
         <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-          Zůstaň v obraze
+          {dict.newsletter.title}
         </h3>
         <p className="text-sm text-[var(--text-secondary)] mb-5">
-          Přihlaš se k odběru a dostávej nové články přímo do schránky (až se rozhoupu rozhchodit napojení na službu ;)).
+          {dict.newsletter.description}
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
@@ -38,7 +40,7 @@ export function Newsletter() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="tvuj@email.cz"
+            placeholder={dict.newsletter.placeholder}
             required
             className="flex-1 px-4 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
           />
@@ -46,13 +48,13 @@ export function Newsletter() {
             type="submit"
             className="px-6 py-2.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white dark:text-black font-semibold text-sm transition-colors cursor-pointer whitespace-nowrap"
           >
-            Odebírat
+            {dict.newsletter.subscribe}
           </button>
         </form>
 
         {status === "success" && (
           <p className="mt-3 text-sm text-[var(--accent)] font-medium">
-            ✓ Díky za přihlášení! (Zatím ti nebude chodít nic, napojení na službu bude snad brzy.)
+            {dict.newsletter.success}
           </p>
         )}
       </div>
