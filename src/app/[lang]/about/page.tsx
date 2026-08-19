@@ -8,8 +8,7 @@ import {
 } from "react-icons/hi2";
 import { type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-
-const skillIcons = [HiOutlineShieldCheck, HiOutlineCommandLine, HiOutlineAcademicCap];
+import Image from "next/image";
 
 interface PageProps {
   params: Promise<{ lang: string }>;
@@ -49,39 +48,38 @@ export default async function AboutPage({ params }: PageProps) {
             <span>{dict.about.terminalCmd}</span>
           </div>
 
-          <div className="space-y-4 text-[var(--text-secondary)] leading-relaxed">
-            {dict.about.bio.map((paragraph, i) => (
-              <p key={i}>
-                {i === 0 ? (
-                  <>
-                    {paragraph.split("{name}")[0]}
-                    <strong className="text-[var(--text-primary)]">{dict.about.bioName}</strong>
-                    {paragraph.split("{name}")[1]}
-                  </>
-                ) : (
-                  paragraph
-                )}
-              </p>
-            ))}
-          </div>
+          <div className="text-[var(--text-secondary)] leading-relaxed">
+            <div className="float-none sm:float-left mb-6 sm:mr-8 sm:mb-4 w-full sm:w-72 md:w-80">
+              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl border border-[var(--border-color)] shadow-md">
+                <Image
+                  src="/portret.jpg"
+                  alt="Milan Jakubec"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 288px, 320px"
+                  className="object-cover object-top"
+                  priority
+                />
+              </div>
+            </div>
 
-          {/* Skill cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-            {dict.about.skills.map((skill, i) => {
-              const Icon = skillIcons[i];
-              return (
-                <div
-                  key={skill.title}
-                  className="p-4 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)]"
-                >
-                  <Icon className="w-6 h-6 text-[var(--accent)] mb-2" />
-                  <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1">
-                    {skill.title}
-                  </h3>
-                  <p className="text-xs text-[var(--text-muted)]">{skill.desc}</p>
-                </div>
-              );
-            })}
+            <div className="space-y-4">
+              {dict.about.bio.map((paragraph, i) => (
+                <p key={i}>
+                  {i === 0 ? (
+                    <>
+                      {paragraph.split("{name}")[0]}
+                      <strong className="text-[var(--text-primary)]">{dict.about.bioName}</strong>
+                      {paragraph.split("{name}")[1]}
+                    </>
+                  ) : (
+                    paragraph
+                  )}
+                </p>
+              ))}
+            </div>
+
+            
+            <div className="clear-both" />
           </div>
         </div>
       </section>

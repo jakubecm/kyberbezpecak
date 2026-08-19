@@ -9,13 +9,13 @@ const cs = {
     openMenu: "Otevřít menu",
   },
   home: {
-    badge: "kybernetická bezpečnost \u00B7 blog \u00B7 knowledge base",
-    greeting: "Ahoj, jsem",
+    badge: "kyberbezpečnost \u00B7 blog \u00B7 knowledge base",
+    greeting: "Vítej na mém blogu🛡️",
     description:
-      "Píšu si tady o kybernetické bezpečnosti – od aplikační bezpečnosti a SSDLC přes různé CTF experimenty. Najdeš tady moje poznámky, návody a postřehy z praxe. A vlastně je tady najdu i já. Proto blog vznikl. :)",
+      "Píšu tady o kybernetické bezpečnosti – od aplikační bezpečnosti a SSDLC, přes všechna možná další témata. Můžeš tu najít i nějaké návody a postřehy z praxe, nebo třeba zajímavosti, na které narazím. A vlastně je tady najdu i já. Proto blog vznikl. :)",
     readArticles: "Číst články",
     aboutMe: "O mně",
-    terminalWelcome: "Vítej na kyberbezpecak.cz 🛡️",
+    terminalWelcome: "Real programmers don't write documentation. If it was hard to write, it should be hard to understand.",
     latestArticles: "Nejnovější články",
     allArticles: "Všechny články",
     categories: "Kategorie",
@@ -41,9 +41,12 @@ const cs = {
     terminalCmd: "cat /home/milan/about.txt",
     bioName: "Milan Jakubec",
     bio: [
-      "Ahoj! Jmenuju se {name} a tenhle blog slouží jako moje veřejná osobní knowledge base zaměřená na kyber. Aktuálně pracuju ve firmě Edhouse jako AppSec Engineer, kde se věnuju bezpečnosti softwaru a SSDLC (secure software development lifecycle). Předtím jsem rok pracoval jako backend developer na volné noze. Co do studia, aktuálně jsem student kyberbezpečnosti na FAI UTB, předtím jsem vystudoval bakaláře na FIT VUT v Brně.",
-      "Rád píšu a psaní mi vždycky docela šlo, všichni víme, že Feynmanova technika funguje a zároveň mi chybí nějaké ucelené místo, s pomocí kterého bych mohl trackovat vlastní progress a mít možnost se vrátít třeba k nějaké starší myšlence nebo problematice. Sdílím tady svoje zkušenosti, poznámky a postřehy z oblasti bezpečnosti – od aplikační bezpečnosti (AppSec), což je přímo moje doména, ale i z oblastí bezpečnosti, o které se třeba zajímám, ale zatím v nich nemám tolik zkušeností, což je třeba pentesting a podobně.",
-      "Cílem tohoto blogu je psát o tématech v kyber, co mě zajímají, a zároveň pomoci dalším lidem, kteří se do světa kyberbezpečnosti teprve dostávají, nebo se v něm chtějí zorientovat a něco se dozvědět. Já sám bych takový blog v minulosti ocenil, protože spousta informací je rozesetá po různých fórech, blogách, YouTube kanálech a podobně, a není úplně jednoduché se v tom všem zorientovat.",
+      "Ahoj! Jmenuju se {name} a tenhle blog slouží jako moje veřejná knowledge base ze světa kyberbezpečnosti.",
+      "Aktuálně pracuju jako AppSec Engineer ve firmě Edhouse, kde řeším bezpečnost softwaru, SSDLC, threat modeling a částečně i DevOps. Dříve jsem vyvíjel backend na volné noze, což mi dalo slušný základ pro to dívat se na kód bezpečnostní optikou. Vystudoval jsem bakaláře na FIT VUT v Brně a v současnosti pokračuju ve studiu kyberbezpečnosti na FAI UTB.",
+      "Blog píšu ze dvou hlavních důvodů: chci mít přehledné místo pro trackování vlastního posunu a zároveň věřím, že nejlépe se člověk učí tím, že věci vysvětluje ostatním (Feynmanova technika v praxi).",
+      "Možná vás teď napadá - proč kyberbezpečák? Je to celkem jednoduché, líbí se mi to víc než obyčejné milanjakubec.cz a k mému překvapení tu doménu doteď nikdo nevyužíval. No není to škoda?",
+      "Najdete tu poznámky, analýzy a postřehy z mé hlavní domény – aplikační bezpečnosti, ale i z témat, kterými si rozšiřuju obzory (např. pentesting), a sem tam se možná prostě objeví článek na něco, co mě zaujalo. Tenhle blog je záznamem téhle cesty.",
+      "Závěrem bych jen dodal: nečekejte tu v každém příspěvku neomylné expertní pravdy nebo převratné objevy. Proč? Protože nejsem senior s dvaceti lety praxe. AppSec je obrovský obor, zahrnující spoustu disciplín napříč informatikou. Já dělám maximum pro to, abych byl co nejlepším AppSec inženýrem, ale pořád se učím a celý život budu.",
     ],
     skills: [
       {
@@ -88,7 +91,7 @@ const cs = {
   },
   footer: {
     description:
-      "Osobní blog o kybernetické bezpečnosti. Sdílím zkušenosti, novinky a praktické návody z oblasti AppSec a dalších.",
+      "Osobní blog o kyberbezpečnosti. Zkušenosti, novinky, zajímavosti a praktické návody z oblasti AppSec a dalších.",
     navigation: "Navigace",
     socialNetworks: "Sociální sítě",
     allRightsReserved: "Všechna práva vyhrazena.",

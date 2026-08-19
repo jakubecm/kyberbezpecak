@@ -49,7 +49,6 @@ export default async function HomePage({ params }: PageProps) {
 
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
           <span className="text-[var(--text-primary)]">{dict.home.greeting} </span>
-          <span className="text-[var(--accent)] glow-green">Milan</span>
         </h1>
 
         <p className="text-lg sm:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-8 leading-relaxed">
