@@ -1,15 +1,37 @@
 import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
-import { type JSX } from "react";
+import { isValidElement, type ComponentProps, type JSX, type ReactNode } from "react";
+import { slugify } from "@/lib/utils";
+import { type Locale } from "@/i18n/config";
 
 interface MdxRendererProps {
   source: string;
+  lang: Locale;
 }
 
-export async function MdxRenderer({ source }: MdxRendererProps): Promise<JSX.Element> {
+function textOf(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textOf).join("");
+  if (isValidElement(node)) {
+    return textOf((node.props as { children?: ReactNode }).children);
+  }
+  return "";
+}
+
+const components = {
+  // Give h2s stable ids so the table of contents can link to them
+  h2: ({ children, ...props }: ComponentProps<"h2">) => (
+    <h2 id={slugify(textOf(children))} {...props}>
+      {children}
+    </h2>
+  ),
+};
+
+export async function MdxRenderer({ source, lang }: MdxRendererProps): Promise<JSX.Element> {
   const { content } = await compileMDX({
     source,
+    components,
     options: {
       mdxOptions: {
         remarkPlugins: [remarkGfm],
@@ -17,7 +39,7 @@ export async function MdxRenderer({ source }: MdxRendererProps): Promise<JSX.Ele
           [
             rehypePrettyCode,
             {
-              theme: "github-dark-default",
+              theme: { dark: "vesper", light: "github-light" },
               keepBackground: false,
             },
           ],
@@ -27,7 +49,7 @@ export async function MdxRenderer({ source }: MdxRendererProps): Promise<JSX.Ele
   });
 
   return (
-    <div className="prose-cyber max-w-none text-base leading-relaxed space-y-5">
+    <div className="prose-kb" data-lang={lang}>
       {content}
     </div>
   );

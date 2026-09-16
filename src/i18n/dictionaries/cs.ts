@@ -1,141 +1,77 @@
-const cs = {
-  navbar: {
-    home: "Domů",
-    blog: "Blog",
-    about: "O mně",
-    toggleTheme: "Přepnout téma",
-    toggleThemeDark: "Přepnout na světlý režim",
-    toggleThemeLight: "Přepnout na tmavý režim",
-    openMenu: "Otevřít menu",
-  },
-  home: {
-    badge: "kyberbezpečnost \u00B7 blog \u00B7 knowledge base",
-    greeting: "Vítej na mém blogu🛡️",
-    description:
-      "Píšu tady o kybernetické bezpečnosti – od aplikační bezpečnosti a SSDLC, přes všechna možná další témata. Můžeš tu najít i nějaké návody a postřehy z praxe, nebo třeba zajímavosti, na které narazím. A vlastně je tady najdu i já. Proto blog vznikl. :)",
-    readArticles: "Číst články",
-    aboutMe: "O mně",
-    terminalWelcome: "Real programmers don't write documentation. If it was hard to write, it should be hard to understand.",
-    latestArticles: "Nejnovější články",
-    allArticles: "Všechny články",
-    categories: "Kategorie",
-  },
-  blog: {
-    title: "Blog",
-    description:
-      "Všechny články na jednom místě. Filtruj podle kategorie nebo vyhledávej podle klíčových slov.",
-    searchPlaceholder: "Hledat články...",
-    all: "Všechny",
-    noResults: "Žádné výsledky",
-    found: "Nalezeno",
-    articles: "článků",
-    inCategory: "v kategorii",
-    forQuery: "pro",
-    nothingFound: "Nic nenalezeno",
-    tryDifferent: "Zkus změnit filtr nebo hledaný výraz.",
-    backToBlog: "Zpět na blog",
-  },
-  about: {
-    title: "O mně",
-    subtitle: 'Kdo je ten "kyberbezpečák"?',
-    terminalCmd: "cat /home/milan/about.txt",
-    bioName: "Milan Jakubec",
-    bio: [
-      "Ahoj! Jmenuju se {name} a tenhle blog slouží jako moje veřejná knowledge base ze světa kyberbezpečnosti.",
-      "Aktuálně pracuju jako AppSec Engineer ve firmě Edhouse, kde řeším bezpečnost softwaru, SSDLC, threat modeling a částečně i DevOps. Dříve jsem vyvíjel backend na volné noze, což mi dalo slušný základ pro to dívat se na kód bezpečnostní optikou. Vystudoval jsem bakaláře na FIT VUT v Brně a v současnosti pokračuju ve studiu kyberbezpečnosti na FAI UTB.",
-      "Blog píšu ze dvou hlavních důvodů: chci mít přehledné místo pro trackování vlastního posunu a zároveň věřím, že nejlépe se člověk učí tím, že věci vysvětluje ostatním (Feynmanova technika v praxi).",
-      "Možná vás teď napadá - proč kyberbezpečák? Je to celkem jednoduché, líbí se mi to víc než obyčejné milanjakubec.cz a k mému překvapení tu doménu doteď nikdo nevyužíval. No není to škoda?",
-      "Najdete tu poznámky, analýzy a postřehy z mé hlavní domény – aplikační bezpečnosti, ale i z témat, kterými si rozšiřuju obzory (např. pentesting), a sem tam se možná prostě objeví článek na něco, co mě zaujalo. Tenhle blog je záznamem téhle cesty.",
-      "Závěrem bych jen dodal: nečekejte tu v každém příspěvku neomylné expertní pravdy nebo převratné objevy. Proč? Protože nejsem senior s dvaceti lety praxe. AppSec je obrovský obor, zahrnující spoustu disciplín napříč informatikou. Já dělám maximum pro to, abych byl co nejlepším AppSec inženýrem, ale pořád se učím a celý život budu.",
-    ],
-    skills: [
-      {
-        title: "AppSec",
-        desc: "Bezpečnost aplikací, OWASP, code review",
-      },
-      {
-        title: "Red & Blue Team",
-        desc: "Ofenzivní i defenzivní bezpečnost",
-      },
-      {
-        title: "CTF & Vzdělávání",
-        desc: "Certifikace, self-study",
-      },
-    ],
-    contact: "Kontakt",
-    contactDescription:
-      "Máš dotaz, feedback nebo nápad na spolupráci? Napiš mi.",
-  },
-  contact: {
-    name: "Jméno *",
-    email: "E-mail *",
-    subject: "Předmět *",
-    message: "Zpráva *",
-    send: "Odeslat zprávu",
-    sending: "Odesílám...",
-    success: "✓ Zpráva byla úspěšně odeslána. Díky!",
-    error: "✗ Něco se pokazilo. Zkus to prosím znovu.",
-    namePlaceholder: "Jan Novák",
-    emailPlaceholder: "jan@email.cz",
-    subjectPlaceholder: "Dotaz k článku o...",
-    messagePlaceholder: "Tvoje zpráva...",
-  },
-  newsletter: {
-    title: "Zůstaň v obraze",
-    description:
-      "Přihlaš se k odběru a dostávej nové články přímo do schránky (až se rozhoupu rozchodit napojení na službu ;)).",
-    placeholder: "tvuj@email.cz",
-    subscribe: "Odebírat",
-    success:
-      "✓ Díky za přihlášení! (Zatím ti nebude chodít nic, napojení na službu bude snad brzy.)",
-  },
-  footer: {
-    description:
-      "Osobní blog o kyberbezpečnosti. Zkušenosti, novinky, zajímavosti a praktické návody z oblasti AppSec a dalších.",
-    navigation: "Navigace",
-    socialNetworks: "Sociální sítě",
-    allRightsReserved: "Všechna práva vyhrazena.",
-  },
-  notFound: {
-    title: "404",
-    description: "Tato stránka nebyla nalezena.",
-    backHome: "Zpět na hlavní stránku",
-  },
-  pagination: {
-    label: "Stránkování",
-    previous: "Předchozí stránka",
-    next: "Další stránka",
-  },
-} as const;
+export interface ExperienceRole {
+  title: string;
+  period: string;
+  text: string;
+}
 
-export default cs;
+export interface ExperienceItem {
+  period: string;
+  current?: boolean;
+  title: string;
+  meta: string;
+  text?: string;
+  tags: readonly string[];
+  roles?: readonly ExperienceRole[];
+}
+
+export interface EducationItem {
+  period: string;
+  ongoing?: boolean;
+  degree: string;
+  school: string;
+}
 
 export interface Dictionary {
   navbar: {
-    home: string;
-    blog: string;
+    articles: string;
     about: string;
-    toggleTheme: string;
-    toggleThemeDark: string;
-    toggleThemeLight: string;
-    openMenu: string;
+    contact: string;
+    home: string;
+    menu: string;
+    closeMenu: string;
+    switchToLight: string;
+    switchToDark: string;
+    switchLanguage: string;
   };
   home: {
-    badge: string;
-    greeting: string;
+    titleStart: string;
+    titleAccent: string;
+    titleEnd: string;
     description: string;
-    readArticles: string;
-    aboutMe: string;
-    terminalWelcome: string;
-    latestArticles: string;
+    facts: {
+      author: string;
+      role: string;
+      study: string;
+      focus: string;
+      status: string;
+    };
+    factValues: {
+      role: string;
+      study: string;
+      focus: string;
+      status: string;
+    };
+    fullCv: string;
+    latest: string;
     allArticles: string;
-    categories: string;
+    empty: string;
+  };
+  index: {
+    id: string;
+    date: string;
+    title: string;
+    category: string;
+    reading: string;
   };
   blog: {
+    eyebrow: string;
     title: string;
     description: string;
+    searchLabel: string;
     searchPlaceholder: string;
+    clearSearch: string;
     all: string;
+    filterLabel: string;
     noResults: string;
     found: string;
     articles: string;
@@ -143,16 +79,57 @@ export interface Dictionary {
     forQuery: string;
     nothingFound: string;
     tryDifferent: string;
-    backToBlog: string;
+  };
+  article: {
+    back: string;
+    contents: string;
+    category: string;
+    published: string;
+    updated: string;
+    reading: string;
+    tags: string;
+    share: string;
+    copyLink: string;
+    copied: string;
   };
   about: {
     title: string;
-    subtitle: string;
-    terminalCmd: string;
-    bioName: string;
+    metaDescription: string;
+    eyebrow: string;
+    name: string;
+    headline: string;
     bio: readonly string[];
-    skills: readonly { title: string; desc: string }[];
-    contact: string;
+    writeMe: string;
+    facts: {
+      work: string;
+      study: string;
+    };
+    factValues: {
+      work: string;
+      study: string;
+    };
+    sections: {
+      experience: string;
+      education: string;
+      certifications: string;
+      skills: string;
+      contact: string;
+    };
+    now: string;
+    ongoing: string;
+    experience: readonly ExperienceItem[];
+    education: readonly EducationItem[];
+    certTable: {
+      name: string;
+      issuer: string;
+      issued: string;
+      validity: string;
+      noExpiry: string;
+      expired: string;
+    };
+    verifyCredly: string;
+    skills: readonly { key: string; items: readonly string[] }[];
+    contactTitle: string;
     contactDescription: string;
   };
   contact: {
@@ -169,18 +146,8 @@ export interface Dictionary {
     subjectPlaceholder: string;
     messagePlaceholder: string;
   };
-  newsletter: {
-    title: string;
-    description: string;
-    placeholder: string;
-    subscribe: string;
-    success: string;
-  };
   footer: {
-    description: string;
-    navigation: string;
-    socialNetworks: string;
-    allRightsReserved: string;
+    quote: string;
   };
   notFound: {
     title: string;
@@ -193,3 +160,212 @@ export interface Dictionary {
     next: string;
   };
 }
+
+const cs: Dictionary = {
+  navbar: {
+    articles: "Články",
+    about: "O mně",
+    contact: "Kontakt",
+    home: "Kyberbezpečák – domů",
+    menu: "menu",
+    closeMenu: "zavřít",
+    switchToLight: "Přepnout na světlý režim",
+    switchToDark: "Přepnout na tmavý režim",
+    switchLanguage: "Switch to English",
+  },
+  home: {
+    titleStart: "Zápisky z ",
+    titleAccent: "kyberbezpečnosti",
+    titleEnd: ". Hlavně pro mě, klidně i pro tebe.",
+    description:
+      "Píšu o aplikační bezpečnosti, SSDLC a o všem dalším, na co narazím. Návody, postřehy z praxe a zajímavosti, sepsané tak, abych se k nim mohl vracet.",
+    facts: {
+      author: "autor",
+      role: "role",
+      study: "studium",
+      focus: "fokus",
+      status: "status",
+    },
+    factValues: {
+      role: "AppSec Engineer @ Edhouse",
+      study: "Kyberbezpečnost, FAI UTB",
+      focus: "SSDLC, threat modeling, DevSecOps",
+      status: "pořád se učí",
+    },
+    fullCv: "celé CV",
+    latest: "Index / nejnovější",
+    allArticles: "Všechny články",
+    empty: "Zatím tu nic není. První článek je na cestě.",
+  },
+  index: {
+    id: "ID",
+    date: "Datum",
+    title: "Název",
+    category: "Kategorie",
+    reading: "Čtení",
+  },
+  blog: {
+    eyebrow: "Index / všechny články",
+    title: "Články",
+    description:
+      "Všechno na jednom místě. Hledej podle názvu, popisu nebo tagů.",
+    searchLabel: "Hledat v článcích",
+    searchPlaceholder: "hledat…",
+    clearSearch: "Smazat hledání",
+    all: "Vše",
+    filterLabel: "Filtrovat podle kategorie",
+    noResults: "Žádné výsledky",
+    found: "Nalezeno",
+    articles: "článků",
+    inCategory: "v kategorii",
+    forQuery: "pro",
+    nothingFound: "Nic nenalezeno",
+    tryDifferent: "Zkus změnit filtr nebo hledaný výraz.",
+  },
+  article: {
+    back: "Zpět na články",
+    contents: "Obsah",
+    category: "kategorie",
+    published: "vydáno",
+    updated: "upraveno",
+    reading: "čtení",
+    tags: "tagy",
+    share: "sdílet",
+    copyLink: "kopírovat odkaz",
+    copied: "zkopírováno",
+  },
+  about: {
+    title: "O mně",
+    metaDescription:
+      "Milan Jakubec – AppSec Engineer. Zkušenosti, vzdělání, certifikace a kontakt.",
+    eyebrow: "O mně / CV",
+    name: "Milan Jakubec",
+    headline: "AppSec Engineer | DevSecOps",
+    bio: [
+      "Od roku 2025 pracuju jako AppSec inženýr, předtím jsem vyvíjel backend v ASP.NET Core. Snažím se propojovat vývoj, byznys a compliance: integruju bezpečnostní nástroje do CI/CD, ale hlavně se snažím dostat bezpečnost do celého vývojového cyklu.",
+      "Nejde mi jen o hledání zranitelností, ale i o to, aby vůbec nevznikaly. Proto se věnuju threat modelingu, architektonickým review a souladu s NIS2 a CRA.",
+      "Blog píšu, abych měl přehled o vlastním posunu a protože se nejlépe učím tím, že věci vysvětluju ostatním.",
+    ],
+    writeMe: "Napiš mi",
+    facts: {
+      work: "práce",
+      study: "studium",
+    },
+    factValues: {
+      work: "Edhouse s.r.o.",
+      study: "Ing. Kyberbezpečnost, UTB",
+    },
+    sections: {
+      experience: "Zkušenosti",
+      education: "Vzdělání",
+      certifications: "Certifikace",
+      skills: "Dovednosti",
+      contact: "Kontakt",
+    },
+    now: "nyní",
+    ongoing: "probíhá",
+    experience: [
+      {
+        period: "09/2025 – ",
+        current: true,
+        title: "Application Security Engineer",
+        meta: "Edhouse s.r.o. · částečný úvazek · Zlín",
+        text: "Pomáhám budovat firemní AppSec tým a zavádět SSDLC. Zákazníkům pomáhám s kyberbezpečností: zabezpečení CI/CD pipeline, SAST nástroje (CodeQL), SSDLC, threat modeling, security analýzy.",
+        tags: ["DevSecOps", "SSDLC", "CodeQL", "Threat modeling"],
+      },
+      {
+        period: "08/2024 – 09/2025",
+        title: "Backend Developer",
+        meta: "Metio Software s.r.o. · freelance · remote",
+        text: "Architektura informačních systémů, implementace MVC.",
+        tags: ["ASP.NET Core", "Azure DevOps"],
+      },
+      {
+        period: "01/2020 – 08/2022",
+        title: "Student Trainee Center",
+        meta: "Výběrový program Microsoftu pro studenty",
+        text: "Do programu se z velkého počtu uchazečů dostane jen hrstka lidí. Rozvíjí technické dovednosti i soft skills: vedení týmů, projektů a vlastní vzdělávání.",
+        tags: ["Azure", "Leadership"],
+        roles: [
+          {
+            title: "Azure Dpt Lead",
+            period: "10/2021 – 08/2022",
+            text: "Koordinoval jsem dva group leadery v Azure oddělení, každý s týmem zhruba 10 studentů.",
+          },
+          {
+            title: "Azure IT Pro AG Leader",
+            period: "03/2021 – 10/2021",
+            text: "Vedl jsem tým 8 studentů zaměřený na Azure, Azure Active Directory a Intune.",
+          },
+          {
+            title: "Azure IT Pro AG Student",
+            period: "01/2020 – 03/2021",
+            text: "Psal jsem články pro blog studuj.digital. Takže tohle není můj první blog.",
+          },
+        ],
+      },
+    ],
+    education: [
+      {
+        period: "2025 – 2027",
+        ongoing: true,
+        degree: "Kybernetická bezpečnost (Ing.)",
+        school: "Univerzita Tomáše Bati ve Zlíně, FAI",
+      },
+      {
+        period: "2022 – 2025",
+        degree: "Informační technologie (Bc.)",
+        school: "Vysoké učení technické v Brně, FIT",
+      },
+    ],
+    certTable: {
+      name: "Název",
+      issuer: "Vydavatel",
+      issued: "Vydáno",
+      validity: "Platnost",
+      noExpiry: "bez expirace",
+      expired: "vypršela",
+    },
+    verifyCredly: "ověřit na Credly",
+    skills: [
+      {
+        key: "/appsec",
+        items: ["SSDLC", "Threat modeling", "Architektonická review", "SAST (CodeQL)", "SBOM"],
+      },
+      { key: "/devsecops", items: ["Zabezpečení CI/CD", "Azure DevOps", "Azure"] },
+      { key: "/compliance", items: ["NIS2", "Cyber Resilience Act"] },
+      { key: "/dev", items: ["C# / .NET", "ASP.NET Core", "PHP", "Networking"] },
+    ],
+    contactTitle: "Dotaz, feedback nebo nápad na spolupráci?",
+    contactDescription: "Napiš mi.",
+  },
+  contact: {
+    name: "Jméno",
+    email: "E-mail",
+    subject: "Předmět",
+    message: "Zpráva",
+    send: "Odeslat zprávu",
+    sending: "Odesílám…",
+    success: "Zpráva byla odeslána. Díky!",
+    error: "Něco se pokazilo. Zkus to prosím znovu.",
+    namePlaceholder: "Jan Novák",
+    emailPlaceholder: "jan@email.cz",
+    subjectPlaceholder: "Dotaz k článku o…",
+    messagePlaceholder: "Tvoje zpráva…",
+  },
+  footer: {
+    quote: "Nejlépe se člověk učí tím, že věci vysvětluje ostatním.",
+  },
+  notFound: {
+    title: "404",
+    description: "Tahle stránka neexistuje.",
+    backHome: "Zpět na hlavní stránku",
+  },
+  pagination: {
+    label: "Stránkování",
+    previous: "Předchozí stránka",
+    next: "Další stránka",
+  },
+};
+
+export default cs;

@@ -4,22 +4,32 @@ import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryFilter } from "@/components/CategoryFilter";
-import { ArticleCard } from "@/components/ArticleCard";
+import { ArticleIndex } from "@/components/ArticleIndex";
 import { Pagination } from "@/components/Pagination";
-import { type Category } from "@/types";
-import { HiOutlineDocumentMagnifyingGlass } from "react-icons/hi2";
-import { usePosts } from "./usePosts";
+import { type PostMeta } from "@/types";
 import { useDictionary } from "@/i18n/DictionaryProvider";
 
-export function BlogContent() {
-  const searchParams = useSearchParams();
-  const allPosts = usePosts();
-  const { dict } = useDictionary();
+const PER_PAGE = 10;
 
-  const category = searchParams.get("category") as Category | null;
+function articlesWord(count: number, lang: string): string {
+  if (lang === "en") return count === 1 ? "article" : "articles";
+  if (count === 1) return "článek";
+  if (count >= 2 && count <= 4) return "články";
+  return "článků";
+}
+
+export function BlogContent({ posts: allPosts }: { posts: PostMeta[] }) {
+  const searchParams = useSearchParams();
+  const { dict, lang } = useDictionary();
+
+  const category = searchParams.get("category");
   const query = searchParams.get("q") ?? "";
   const page = parseInt(searchParams.get("page") ?? "1", 10);
-  const perPage = 6;
+
+  const categories = useMemo(
+    () => Array.from(new Set(allPosts.map((p) => p.category))).sort((a, b) => a.localeCompare(b)),
+    [allPosts]
+  );
 
   const filteredPosts = useMemo(() => {
     let posts = allPosts;
@@ -41,50 +51,31 @@ export function BlogContent() {
     return posts;
   }, [allPosts, category, query]);
 
-  const totalPages = Math.ceil(filteredPosts.length / perPage);
-  const currentPage = Math.max(1, Math.min(page, totalPages || 1));
-  const paginatedPosts = filteredPosts.slice(
-    (currentPage - 1) * perPage,
-    currentPage * perPage
-  );
+  const totalPages = Math.ceil(filteredPosts.length / PER_PAGE);
+  const currentPage = Math.max(1, Math.min(Number.isNaN(page) ? 1 : page, totalPages || 1));
+  const paginatedPosts = filteredPosts.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+  const isFiltering = Boolean(category || query);
 
   return (
     <div className="space-y-8">
-      {/* Filters */}
       <div className="space-y-4">
         <SearchBar />
-        <CategoryFilter />
+        <CategoryFilter categories={categories} />
       </div>
 
-      {/* Results info */}
-      <p className="text-sm text-[var(--text-muted)] font-mono">
+      <p className="font-mono text-[13px] text-muted" aria-live="polite">
         {filteredPosts.length === 0
           ? dict.blog.noResults
-          : `${dict.blog.found} ${filteredPosts.length} ${dict.blog.articles}`}
-        {category && ` ${dict.blog.inCategory} „${category}"`}
-        {query && ` ${dict.blog.forQuery} „${query}"`}
+          : `${dict.blog.found} ${filteredPosts.length} ${articlesWord(filteredPosts.length, lang)}`}
+        {category && ` ${dict.blog.inCategory} „${category}“`}
+        {query && ` ${dict.blog.forQuery} „${query}“`}
       </p>
 
-      {/* Articles grid */}
-      {paginatedPosts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {paginatedPosts.map((post) => (
-            <ArticleCard key={post.slug} post={post} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-20">
-          <HiOutlineDocumentMagnifyingGlass className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-4" />
-          <p className="text-[var(--text-secondary)] text-lg font-medium mb-2">
-            {dict.blog.nothingFound}
-          </p>
-          <p className="text-sm text-[var(--text-muted)]">
-            {dict.blog.tryDifferent}
-          </p>
-        </div>
-      )}
+      <ArticleIndex
+        posts={paginatedPosts}
+        emptyText={isFiltering ? `${dict.blog.nothingFound}. ${dict.blog.tryDifferent}` : dict.home.empty}
+      />
 
-      {/* Pagination */}
       <Pagination totalPages={totalPages} currentPage={currentPage} />
     </div>
   );

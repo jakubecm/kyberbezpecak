@@ -1,39 +1,26 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { HiSun, HiMoon } from "react-icons/hi2";
 import { useDictionary } from "@/i18n/DictionaryProvider";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
   const { dict } = useDictionary();
 
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted) {
-    return (
-      <button
-        className="p-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)]"
-        aria-label={dict.navbar.toggleTheme}
-      >
-        <div className="w-5 h-5" />
-      </button>
-    );
-  }
-
+  // The label is driven by the .dark class (set by next-themes before hydration),
+  // so it renders correctly even before React takes over.
   return (
     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] hover:border-[var(--accent)] transition-colors cursor-pointer"
-      aria-label={theme === "dark" ? dict.navbar.toggleThemeDark : dict.navbar.toggleThemeLight}
+      type="button"
+      onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
+      className="min-w-[58px] border border-rule-strong px-2.5 py-1 font-mono text-[13px] text-muted transition-colors hover:border-muted hover:text-fg cursor-pointer"
     >
-      {theme === "dark" ? (
-        <HiSun className="w-5 h-5 text-yellow-400" />
-      ) : (
-        <HiMoon className="w-5 h-5 text-slate-700" />
-      )}
+      <span className="hidden dark:inline">
+        light<span className="sr-only"> – {dict.navbar.switchToLight}</span>
+      </span>
+      <span className="dark:hidden">
+        dark<span className="sr-only"> – {dict.navbar.switchToDark}</span>
+      </span>
     </button>
   );
 }

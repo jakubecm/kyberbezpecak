@@ -1,30 +1,23 @@
 import Link from "next/link";
-import { HiOutlineExclamationTriangle } from "react-icons/hi2";
 
 export default function NotFound() {
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 text-center">
-      <HiOutlineExclamationTriangle className="w-16 h-16 text-[var(--accent)] mx-auto mb-6" />
-
-      <div className="font-mono text-sm text-[var(--text-muted)] mb-4">
-        <span className="text-[var(--accent)]">$</span> curl -I /this-page
-        <br />
-        <span className="text-red-400">HTTP/1.1 404 Not Found</span>
+    <div className="mx-auto max-w-[1280px] px-4 sm:px-8 lg:px-16">
+      <div className="flex flex-col gap-6 border-b border-rule py-24 sm:py-32">
+        <span className="font-mono text-[13px] text-accent">HTTP/1.1 404 Not Found</span>
+        <h1 className="font-mono text-4xl font-medium tracking-[-0.02em] sm:text-5xl">
+          Tahle stránka neexistuje.
+        </h1>
+        <p className="text-lg text-fg-3">This page doesn&apos;t exist.</p>
+        <div className="flex gap-6 pt-4 font-mono text-[13px]">
+          <Link href="/" className="text-fg transition-colors hover:text-accent">
+            ← Domů
+          </Link>
+          <Link href="/en" className="text-fg transition-colors hover:text-accent">
+            ← Home
+          </Link>
+        </div>
       </div>
-
-      <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-3">
-        404
-      </h1>
-      <p className="text-lg text-[var(--text-secondary)] mb-8">
-        Page not found / Stránka nenalezena
-      </p>
-
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white dark:text-black font-semibold text-sm transition-colors"
-      >
-        ← Home
-      </Link>
     </div>
   );
 }

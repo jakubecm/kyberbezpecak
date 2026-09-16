@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { HiOutlineBars3, HiXMark } from "react-icons/hi2";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import { useDictionary } from "@/i18n/DictionaryProvider";
@@ -15,87 +14,86 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { dict, lang } = useDictionary();
 
+  const homeHref = localePath(lang, "/");
   const navLinks = [
-    { href: localePath(lang, "/"), label: dict.navbar.home },
-    { href: localePath(lang, "/blog"), label: dict.navbar.blog },
-    { href: localePath(lang, "/about"), label: dict.navbar.about },
+    { n: "01", href: localePath(lang, "/blog"), match: localePath(lang, "/blog"), label: dict.navbar.articles },
+    { n: "02", href: localePath(lang, "/about"), match: localePath(lang, "/about"), label: dict.navbar.about },
+    { n: "03", href: localePath(lang, "/about#contact"), match: null, label: dict.navbar.contact },
   ];
 
+  const isActive = (match: string | null) =>
+    match !== null && (pathname === match || pathname.startsWith(`${match}/`));
+
+  const linkClass = (active: boolean) =>
+    cn("transition-colors hover:text-accent", active ? "text-accent" : "text-fg");
+
   return (
-    <nav className="sticky top-0 z-50 border-b border-[var(--border-color)] bg-[var(--bg-primary)]/80 backdrop-blur-xl">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-[var(--accent)] font-mono font-bold text-lg">
-              <span className="text-[var(--text-muted)]">~/</span>
-              kyberbezpečák
-            </span>
-          </Link>
+    <header className="mx-auto w-full max-w-[1280px] px-4 sm:px-8 lg:px-16">
+      <div className="flex h-[72px] items-center justify-between border-b border-rule font-mono text-[13px] md:grid md:grid-cols-12 md:gap-x-6">
+        <Link
+          href={homeHref}
+          aria-label={dict.navbar.home}
+          className="text-[15px] font-bold tracking-[0.04em] text-fg hover:text-fg md:col-span-4"
+        >
+          KYBERBEZPEČÁK<span className="text-accent">_</span>
+        </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
+        <nav className="hidden md:col-span-5 md:col-start-6 md:flex md:gap-8" aria-label="Main">
+          {navLinks.map((link) => {
+            const active = isActive(link.match);
+            return (
               <Link
-                key={link.href}
+                key={link.n}
                 href={link.href}
-                className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                  pathname === link.href
-                    ? "bg-[var(--accent-glow)] text-[var(--accent)]"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
-                )}
+                aria-current={active ? "page" : undefined}
+                className={linkClass(active)}
               >
-                {link.label}
+                <span className="text-muted">{link.n}</span> {link.label}
               </Link>
-            ))}
-            <div className="ml-3 flex items-center gap-2">
-              <LanguageToggle />
-              <ThemeToggle />
-            </div>
-          </div>
+            );
+          })}
+        </nav>
 
-          {/* Mobile buttons */}
-          <div className="flex items-center gap-2 md:hidden">
-            <LanguageToggle />
-            <ThemeToggle />
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="p-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] hover:border-[var(--accent)] transition-colors cursor-pointer"
-              aria-label="Otevřít menu"
-            >
-              {mobileOpen ? (
-                <HiXMark className="w-5 h-5" />
-              ) : (
-                <HiOutlineBars3 className="w-5 h-5" />
-              )}
-            </button>
-          </div>
+        <div className="hidden items-center justify-end gap-4 md:col-span-2 md:col-start-11 md:flex">
+          <LanguageToggle />
+          <ThemeToggle />
         </div>
 
-        {/* Mobile menu */}
-        {mobileOpen && (
-          <div className="md:hidden pb-4 border-t border-[var(--border-color)] pt-3 mt-1">
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
+        <button
+          type="button"
+          onClick={() => setMobileOpen((open) => !open)}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-menu"
+          className="-mr-2 px-2 py-3 text-muted hover:text-fg md:hidden cursor-pointer"
+        >
+          {mobileOpen ? dict.navbar.closeMenu : dict.navbar.menu}
+        </button>
+      </div>
+
+      {mobileOpen && (
+        <div id="mobile-menu" className="border-b border-rule py-4 font-mono text-sm md:hidden">
+          <nav className="flex flex-col" aria-label="Main">
+            {navLinks.map((link) => {
+              const active = isActive(link.match);
+              return (
                 <Link
-                  key={link.href}
+                  key={link.n}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    "px-4 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                    pathname === link.href
-                      ? "bg-[var(--accent-glow)] text-[var(--accent)]"
-                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
-                  )}
+                  aria-current={active ? "page" : undefined}
+                  className={cn("py-3", linkClass(active))}
                 >
-                  {link.label}
+                  <span className="text-muted">{link.n}</span> {link.label}
                 </Link>
-              ))}
-            </div>
+              );
+            })}
+          </nav>
+          <div className="mt-3 flex items-center gap-4 border-t border-rule pt-4">
+            <LanguageToggle />
+            <ThemeToggle />
           </div>
-        )}
-      </div>
-    </nav>
+        </div>
+      )}
+    </header>
   );
 }

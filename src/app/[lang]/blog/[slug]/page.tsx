@@ -2,15 +2,9 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPostBySlug, getAllSlugs } from "@/lib/posts";
-import { formatDate, getCategoryColor, getCategoryColorLight } from "@/lib/utils";
+import { extractHeadings, formatIsoDate, formatPostId } from "@/lib/utils";
 import { MdxRenderer } from "@/components/MdxRenderer";
 import { ShareButtons } from "@/components/ShareButtons";
-import {
-  HiOutlineCalendar,
-  HiOutlineClock,
-  HiOutlineUser,
-  HiOutlineArrowLeft,
-} from "react-icons/hi2";
 import { type Locale, localePath } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 
@@ -64,75 +58,89 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   if (!post) notFound();
 
+  const headings = extractHeadings(post.content);
+  const blogHref = localePath(lang, "/blog");
+
+  const meta = [
+    {
+      label: dict.article.category,
+      value: (
+        <Link
+          href={`${blogHref}?category=${encodeURIComponent(post.category)}`}
+          className="transition-colors hover:text-accent"
+        >
+          {post.category}
+        </Link>
+      ),
+    },
+    { label: dict.article.published, value: <time dateTime={post.date}>{formatIsoDate(post.date)}</time> },
+    ...(post.updated
+      ? [{ label: dict.article.updated, value: <time dateTime={post.updated}>{formatIsoDate(post.updated)}</time> }]
+      : []),
+    { label: dict.article.reading, value: `${post.readingMinutes} min` },
+    ...(post.tags.length > 0 ? [{ label: dict.article.tags, value: post.tags.join(", ") }] : []),
+  ];
+
   return (
-    <article className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-12">
-      {/* Back link */}
-      <Link
-        href={localePath(lang, "/blog")}
-        className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors mb-8"
-      >
-        <HiOutlineArrowLeft className="w-4 h-4" />
-        {dict.blog.backToBlog}
-      </Link>
+    <article className="mx-auto max-w-[1280px] px-4 sm:px-8 lg:px-16">
+      <div className="flex h-14 items-center justify-between gap-6 border-b border-rule font-mono text-[13px]">
+        <Link href={blogHref} className="text-muted transition-colors hover:text-fg">
+          ← {dict.article.back}
+        </Link>
+        <span className="hidden truncate text-muted sm:block">
+          ~/blog/<span className="text-fg">{post.slug}</span>
+        </span>
+      </div>
 
-      {/* Header */}
-      <header className="mb-10">
-        <div className="mb-4">
-          <Link
-            href={`${localePath(lang, "/blog")}?category=${encodeURIComponent(post.category)}`}
-            className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full border dark:${getCategoryColor(post.category)} ${getCategoryColorLight(post.category)} hover:opacity-80 transition-opacity`}
-          >
-            {post.category}
-          </Link>
+      <header className="grid grid-cols-1 gap-y-10 border-b border-rule pb-12 pt-14 lg:grid-cols-12 lg:gap-x-6 lg:pb-14 lg:pt-20">
+        <div className="flex flex-col gap-6 lg:col-span-8">
+          <span className="font-mono text-[13px] text-accent">{formatPostId(post.number)}</span>
+          <h1 className="font-mono text-[1.875rem] font-medium leading-[1.18] tracking-[-0.02em] sm:text-4xl lg:text-[2.75rem]">
+            {post.title}
+          </h1>
+          <p className="text-lg leading-relaxed text-fg-3 sm:text-xl">{post.description}</p>
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] leading-tight mb-4">
-          {post.title}
-        </h1>
-
-        <p className="text-lg text-[var(--text-secondary)] mb-6">
-          {post.description}
-        </p>
-
-        {/* Meta info */}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-muted)] pb-6 border-b border-[var(--border-color)]">
-          <span className="flex items-center gap-1.5">
-            <HiOutlineUser className="w-4 h-4" />
-            {post.author}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <HiOutlineCalendar className="w-4 h-4" />
-            {formatDate(post.date, lang)}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <HiOutlineClock className="w-4 h-4" />
-            {post.readingTime}
-          </span>
-        </div>
+        <dl className="grid grid-cols-[88px_minmax(0,1fr)] self-end border-t border-rule font-mono text-[12.5px] leading-normal lg:col-span-3 lg:col-start-10">
+          {meta.map((item) => (
+            <div key={item.label} className="contents">
+              <dt className="border-b border-rule py-2.5 text-muted">{item.label}</dt>
+              <dd className="border-b border-rule py-2.5">{item.value}</dd>
+            </div>
+          ))}
+        </dl>
       </header>
 
-      {/* Article content */}
-      <MdxRenderer source={post.content} />
+      <div className="grid grid-cols-1 pb-24 pt-12 lg:grid-cols-12 lg:gap-x-6 lg:pt-16">
+        {headings.length > 1 && (
+          <nav aria-label={dict.article.contents} className="hidden lg:col-span-3 lg:block">
+            <div className="sticky top-8 flex flex-col gap-3 font-mono text-[13px]">
+              <span className="mb-1 uppercase text-fg">{dict.article.contents}</span>
+              {headings.map((heading, i) => (
+                <a
+                  key={heading.id}
+                  href={`#${heading.id}`}
+                  className="flex gap-3 text-muted transition-colors hover:text-fg"
+                >
+                  <span className="text-accent">{String(i + 1).padStart(2, "0")}</span>
+                  <span>{heading.text}</span>
+                </a>
+              ))}
+            </div>
+          </nav>
+        )}
 
-      {/* Tags & Share */}
-      <footer className="mt-12 pt-8 border-t border-[var(--border-color)]">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          {/* Tags */}
-          <div className="flex flex-wrap gap-1.5">
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-tertiary)] px-2.5 py-1 rounded border border-[var(--border-color)]"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
+        <div className="min-w-0 lg:col-span-7 lg:col-start-4">
+          <MdxRenderer source={post.content} lang={lang} />
 
-          {/* Share */}
-          <ShareButtons title={post.title} slug={post.slug} />
+          <footer className="mt-16 flex flex-col gap-4 border-t border-rule pt-6 font-mono text-[13px] sm:flex-row sm:items-center sm:justify-between">
+            <Link href={blogHref} className="text-muted transition-colors hover:text-fg">
+              ← {dict.article.back}
+            </Link>
+            <ShareButtons title={post.title} slug={post.slug} />
+          </footer>
         </div>
-      </footer>
+      </div>
     </article>
   );
 }
