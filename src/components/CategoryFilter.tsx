@@ -1,18 +1,20 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { CATEGORIES, type Category } from "@/types";
-import { getCategoryColor, getCategoryColorLight, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useDictionary } from "@/i18n/DictionaryProvider";
 import { localePath } from "@/i18n/config";
 
-export function CategoryFilter() {
+/** Categories come from existing posts, so the filter only shows what's actually written. */
+export function CategoryFilter({ categories }: { categories: string[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { dict, lang } = useDictionary();
-  const activeCategory = searchParams.get("category") as Category | null;
+  const activeCategory = searchParams.get("category");
 
-  const handleFilter = (category: Category | null) => {
+  if (categories.length < 2) return null;
+
+  const handleFilter = (category: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
     if (category) {
       params.set("category", category);
@@ -23,31 +25,26 @@ export function CategoryFilter() {
     router.push(`${localePath(lang, "/blog")}?${params.toString()}`);
   };
 
+  const buttonClass = (active: boolean) =>
+    cn(
+      "border px-3 py-1.5 font-mono text-xs uppercase transition-colors cursor-pointer",
+      active ? "border-accent text-accent" : "border-rule text-muted hover:border-rule-strong hover:text-fg"
+    );
+
   return (
-    <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => handleFilter(null)}
-        className={cn(
-          "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer",
-          !activeCategory
-            ? "bg-[var(--accent)] text-white dark:text-black border-[var(--accent)]"
-            : "border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-        )}
-      >
+    <div role="group" aria-label={dict.blog.filterLabel} className="flex flex-wrap gap-2">
+      <button type="button" aria-pressed={!activeCategory} onClick={() => handleFilter(null)} className={buttonClass(!activeCategory)}>
         {dict.blog.all}
       </button>
-      {CATEGORIES.map((cat) => (
+      {categories.map((category) => (
         <button
-          key={cat}
-          onClick={() => handleFilter(cat)}
-          className={cn(
-            "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer",
-            activeCategory === cat
-              ? `dark:${getCategoryColor(cat)} ${getCategoryColorLight(cat)}`
-              : "border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-          )}
+          key={category}
+          type="button"
+          aria-pressed={activeCategory === category}
+          onClick={() => handleFilter(category)}
+          className={buttonClass(activeCategory === category)}
         >
-          {cat}
+          {category}
         </button>
       ))}
     </div>

@@ -44,10 +44,11 @@ export function ContactForm() {
   };
 
   const inputClasses =
-    "w-full px-4 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors";
+    "w-full border border-rule bg-surface px-4 py-3.5 text-base text-fg placeholder:text-faint focus:border-accent focus:outline-none transition-colors";
+  const labelClasses = "mb-2 block font-mono text-xs uppercase tracking-[0.04em] text-muted";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="relative space-y-5">
       {/* Honeypot – hidden from real users, bots will fill it */}
       <div className="absolute opacity-0 top-0 left-0 h-0 w-0 -z-10" aria-hidden="true">
         <label htmlFor="website">Website</label>
@@ -64,7 +65,7 @@ export function ContactForm() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+          <label htmlFor="name" className={labelClasses}>
             {dict.contact.name}
           </label>
           <input
@@ -78,7 +79,7 @@ export function ContactForm() {
           />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+          <label htmlFor="email" className={labelClasses}>
             {dict.contact.email}
           </label>
           <input
@@ -94,7 +95,7 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="subject" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+        <label htmlFor="subject" className={labelClasses}>
           {dict.contact.subject}
         </label>
         <input
@@ -109,7 +110,7 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+        <label htmlFor="message" className={labelClasses}>
           {dict.contact.message}
         </label>
         <textarea
@@ -123,24 +124,19 @@ export function ContactForm() {
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={status === "loading"}
-        className="w-full sm:w-auto px-8 py-3 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black font-semibold text-sm transition-colors cursor-pointer"
-      >
-        {status === "loading" ? dict.contact.sending : dict.contact.send}
-      </button>
-
-      {status === "success" && (
-        <p className="text-sm text-[var(--accent)] font-medium">
-          {dict.contact.success}
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <p aria-live="polite" className="font-mono text-[13px]">
+          {status === "success" && <span className="text-accent">✓ {dict.contact.success}</span>}
+          {status === "error" && <span className="text-accent">✗ {errorMsg}</span>}
         </p>
-      )}
-      {status === "error" && (
-        <p className="text-sm text-red-500 font-medium">
-          ✗ {errorMsg}
-        </p>
-      )}
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="w-full bg-accent px-6 py-3.5 font-mono text-sm font-medium text-accent-fg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto cursor-pointer"
+        >
+          {status === "loading" ? dict.contact.sending : `${dict.contact.send} →`}
+        </button>
+      </div>
     </form>
   );
 }

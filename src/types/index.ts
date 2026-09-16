@@ -4,7 +4,8 @@ export interface PostFrontmatter {
   date: string;
   updated?: string;
   author: string;
-  category: Category;
+  /** Free-form. New categories are created simply by using them in a post. */
+  category: string;
   tags: string[];
   image?: string;
   published: boolean;
@@ -13,25 +14,18 @@ export interface PostFrontmatter {
 export interface Post extends PostFrontmatter {
   slug: string;
   readingTime: string;
+  readingMinutes: number;
+  /** Sequential number by publish date (oldest = 1), shown as KB-001. */
+  number?: number;
   content: string;
 }
 
-export type Category =
-  | "AppSec"
-  | "Legislativa"
-  | "Blue Team"
-  | "Red Team"
-  | "CTF"
-  | "Case Study";
+export type PostMeta = Omit<Post, "content">;
 
-export const CATEGORIES: Category[] = [
-  "AppSec",
-  "Legislativa",
-  "Blue Team",
-  "Red Team",
-  "CTF",
-  "Case Study",
-];
+export interface TocHeading {
+  id: string;
+  text: string;
+}
 
 export interface ContactFormData {
   name: string;

@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
-import { type Post, type PostFrontmatter, type Category } from "@/types";
+import { type Post, type PostFrontmatter } from "@/types";
 import { type Locale, defaultLocale } from "@/i18n/config";
 
 const contentBase = path.join(process.cwd(), "content", "posts");
@@ -49,14 +49,20 @@ export function getAllPosts(locale: Locale = defaultLocale): Post[] {
         slug,
         content,
         readingTime: locale === "en" ? stats.text : stats.text.replace("read", "čtení"),
+        readingMinutes: Math.max(1, Math.ceil(stats.minutes)),
         ...frontmatter,
       } as Post;
     })
     .filter((post): post is Post => post !== null);
 
-  return posts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  // Number posts chronologically (oldest = 1) for the KB-xxx index IDs
+  const byDate = (a: Post, b: Post) =>
+    new Date(a.date).getTime() - new Date(b.date).getTime();
+  posts.sort(byDate).forEach((post, i) => {
+    post.number = i + 1;
+  });
+
+  return posts.reverse();
 }
 
 export function getPostBySlug(slug: string, locale: Locale = defaultLocale): Post | null {
@@ -89,21 +95,21 @@ export function getPostBySlug(slug: string, locale: Locale = defaultLocale): Pos
     slug: safeSlug,
     content,
     readingTime: locale === "en" ? stats.text : stats.text.replace("read", "čtení"),
+    readingMinutes: Math.max(1, Math.ceil(stats.minutes)),
+    number: getAllPosts(locale).find((post) => post.slug === safeSlug)?.number,
     ...frontmatter,
   } as Post;
 }
 
-export function getPostsByCategory(category: Category, locale: Locale = defaultLocale): Post[] {
+export function getPostsByCategory(category: string, locale: Locale = defaultLocale): Post[] {
   return getAllPosts(locale).filter((post) => post.category === category);
 }
 
-export function getAllCategories(locale: Locale = defaultLocale): { name: Category; count: number }[] {
-  const posts = getAllPosts(locale);
-  const categoryMap = new Map<Category, number>();
+export function getAllCategories(locale: Locale = defaultLocale): { name: string; count: number }[] {
+  const categoryMap = new Map<string, number>();
 
-  posts.forEach((post) => {
-    const current = categoryMap.get(post.category) ?? 0;
-    categoryMap.set(post.category, current + 1);
+  getAllPosts(locale).forEach((post) => {
+    categoryMap.set(post.category, (categoryMap.get(post.category) ?? 0) + 1);
   });
 
   return Array.from(categoryMap.entries())

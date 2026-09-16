@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { HiOutlineMagnifyingGlass, HiXMark } from "react-icons/hi2";
 import { useDictionary } from "@/i18n/DictionaryProvider";
 import { localePath } from "@/i18n/config";
 
@@ -30,20 +29,28 @@ export function SearchBar() {
 
   return (
     <div className="relative">
-      <HiOutlineMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+      <label htmlFor="blog-search" className="sr-only">
+        {dict.blog.searchLabel}
+      </label>
+      <span aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 font-mono text-sm text-accent">
+        /
+      </span>
       <input
-        type="text"
+        id="blog-search"
+        type="search"
         value={query}
         onChange={(e) => handleSearch(e.target.value)}
         placeholder={dict.blog.searchPlaceholder}
-        className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
+        className="w-full border border-rule bg-surface py-3 pl-9 pr-24 font-mono text-sm text-fg placeholder:text-faint focus:border-accent focus:outline-none [&::-webkit-search-cancel-button]:hidden"
       />
       {query && (
         <button
+          type="button"
           onClick={() => handleSearch("")}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
+          aria-label={dict.blog.clearSearch}
+          className="absolute right-3 top-1/2 -translate-y-1/2 px-1 font-mono text-xs text-muted hover:text-fg cursor-pointer"
         >
-          <HiXMark className="w-4 h-4" />
+          esc ×
         </button>
       )}
     </div>
