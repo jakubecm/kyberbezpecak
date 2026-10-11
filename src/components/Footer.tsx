@@ -1,20 +1,16 @@
 "use client";
 
-import { useDictionary } from "@/i18n/DictionaryProvider";
-
 const SOCIAL_LINKS = [
   { label: "github", href: "https://github.com/jakubecm" },
   { label: "linkedin", href: "https://www.linkedin.com/in/milan-jakubec/" },
 ];
 
 export function Footer() {
-  const { dict } = useDictionary();
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="mx-auto w-full max-w-[1280px] px-4 sm:px-8 lg:px-16">
       <div className="flex flex-col gap-6 border-t border-rule py-10 md:grid md:grid-cols-12 md:items-end md:gap-x-6">
-        <p className="text-[17px] leading-normal text-fg-3 md:col-span-7">{dict.footer.quote}</p>
         <div className="flex flex-wrap gap-6 font-mono text-[13px] text-muted md:col-span-4 md:col-start-9 md:justify-end">
           {SOCIAL_LINKS.map((link) => (
             <a
