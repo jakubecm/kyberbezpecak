@@ -1,0 +1,17 @@
+name: Deploy
+on:
+  push:
+    branches: [main]
+concurrency: deploy
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Trigger deploy
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          echo "${{ secrets.VPS_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh -p 22 deploy@${{ secrets.VPS_HOST }}
